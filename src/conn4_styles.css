@@ -33,14 +33,14 @@
     /*width: 90%;*/
 }
 
-.winner-piece {
+.solo-piece {
     border-radius: 30px;
     position: relative;
     height: 60px;
     width: 60px;
 }
 
-.winner-panel {
+.side-panel {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -80,4 +80,5 @@
     background: #7722aa;
     color: cornsilk;
     margin-top: 20px;
+    font-size: 100%;
 }

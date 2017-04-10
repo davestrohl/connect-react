@@ -31,6 +31,22 @@ function RestartButton(props) {
         </button>
     )
 }
+function SidePanel(props) {
+    let text = "Current:";
+    let color = props.colors[props.currentPlayer];
+    if (props.winningPlayer) {
+      text = props.winningPlayer === 'E' ? "Stalemate?!?" : "WINNER!";
+      color = props.colors[props.winningPlayer];
+    }
+
+    return (
+        <div className="side-panel">
+            <h1>{text}</h1>
+            <Piece className="solo-piece" color={color}/>
+            {props.winningPlayer && <RestartButton buttonClick={() => props.buttonClick()}/>}
+        </div>
+    )
+}
 
 class Column extends React.Component {
     renderCell(cell, key) {
@@ -223,6 +239,15 @@ class Conn4 extends React.Component {
             }
         }
 
+        // Check to see if the board is full but couldn't be solved -- stalemate
+        let spaceLeft = boardState.reduce((result, column) => {
+            return column.includes('E') || result;
+        }, false);
+
+        if (!spaceLeft) {
+            return 'E';
+        }
+
         return null;
     }
 
@@ -255,14 +280,12 @@ class Conn4 extends React.Component {
                       colors={this.colors}
                       buttonClick={(col) => this.dropPiece(col)}
                       winningPlayer={this.state.winningPlayer}
-        />
-
-       {this.state.winningPlayer && <div className="winner-panel">
-            <h1>WINNER!</h1>
-            <Piece className="winner-piece" color={this.colors[this.state.winningPlayer]}/>
-            <RestartButton buttonClick={() => this.restartGame()}/>
-        </div>
-       }
+            />
+            <SidePanel colors={this.colors}
+                       winningPlayer={this.state.winningPlayer}
+                       currentPlayer={this.state.currentPlayer}
+                       buttonClick={() => this.restartGame()}
+            />
         </div>)
     }
 }
