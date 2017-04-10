@@ -73,3 +73,11 @@
     display: flex;
     flex-direction: column;
 }
+
+.restart-button {
+    height: 70px;
+    width: 100px;
+    background: #7722aa;
+    color: cornsilk;
+    margin-top: 20px;
+}

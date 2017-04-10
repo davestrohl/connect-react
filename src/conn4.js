@@ -24,6 +24,14 @@ function Button(props) {
     )
 }
 
+function RestartButton(props) {
+    return (
+        <button className="restart-button" onClick={() => props.buttonClick()}>
+            RESTART
+        </button>
+    )
+}
+
 class Column extends React.Component {
     renderCell(cell, key) {
         let colorStyle = this.props.colors[cell];
@@ -68,18 +76,20 @@ class Conn4 extends React.Component {
         this.boardColumns = props.columns; //width
         this.boardRows = props.rows; //height
         this.winCondition = props.winCondition; //Connect... what?
-        let boardState = new Array(this.boardColumns).fill('');
-        boardState = boardState.map((col, i) => {
-           return new Array(this.boardRows).fill('E');
-        });
+        // let boardState = new Array(this.boardColumns).fill('');
+        // boardState = boardState.map((col, i) => {
+        //    return new Array(this.boardRows).fill('E');
+        // });
 
-        this.state = {
-            boardState: boardState,
-            nextCells: new Array(this.boardColumns).fill(this.boardRows - 1),
-            currentPlayer: 'R',
-            winningPlayer: null,
-            moveNumber: 1
-        };
+        // this.state = {
+        //     boardState: boardState,
+        //     nextCells: new Array(this.boardColumns).fill(this.boardRows - 1),
+        //     currentPlayer: 'R',
+        //     winningPlayer: null,
+        //     moveNumber: 1
+        // };
+        this.state = this.initializeState();
+
         this.colors = {
             E: {
                 background: "#ffffff"
@@ -90,6 +100,21 @@ class Conn4 extends React.Component {
             B: {
                 background: "#000000"
             }
+        };
+    }
+
+    initializeState () {
+        let boardState = new Array(this.boardColumns).fill('');
+        boardState = boardState.map((col, i) => {
+           return new Array(this.boardRows).fill('E');
+        });
+
+        return {
+            boardState: boardState,
+            nextCells: new Array(this.boardColumns).fill(this.boardRows - 1),
+            currentPlayer: 'R',
+            winningPlayer: null,
+            moveNumber: 1
         };
     }
 
@@ -218,6 +243,9 @@ class Conn4 extends React.Component {
         });
     }
 
+    restartGame() {
+        this.setState(this.initializeState());
+    }
 
 
     render() {
@@ -232,6 +260,7 @@ class Conn4 extends React.Component {
        {this.state.winningPlayer && <div className="winner-panel">
             <h1>WINNER!</h1>
             <Piece className="winner-piece" color={this.colors[this.state.winningPlayer]}/>
+            <RestartButton buttonClick={() => this.restartGame()}/>
         </div>
        }
         </div>)
