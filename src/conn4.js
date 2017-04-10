@@ -92,18 +92,6 @@ class Conn4 extends React.Component {
         this.boardColumns = props.columns; //width
         this.boardRows = props.rows; //height
         this.winCondition = props.winCondition; //Connect... what?
-        // let boardState = new Array(this.boardColumns).fill('');
-        // boardState = boardState.map((col, i) => {
-        //    return new Array(this.boardRows).fill('E');
-        // });
-
-        // this.state = {
-        //     boardState: boardState,
-        //     nextCells: new Array(this.boardColumns).fill(this.boardRows - 1),
-        //     currentPlayer: 'R',
-        //     winningPlayer: null,
-        //     moveNumber: 1
-        // };
         this.state = this.initializeState();
 
         this.colors = {
@@ -142,7 +130,7 @@ class Conn4 extends React.Component {
         // Will be set on empty cell. Doesn't apply to diagonals
         let ignoreColumn = new Array(this.boardColumns).fill(false);
 
-        // Ignore vertical portions of crawl
+        // Ignore vertical portions of crawl. Initialize based on piece count
         let verticalBypasses = nextCells.map((nextCell, i) => {
             return this.boardRows - nextCell <= this.winCondition;
         });
@@ -152,14 +140,12 @@ class Conn4 extends React.Component {
         let horizontalBound = this.boardColumns - this.winCondition;
         let backwardDiagonalBound = this.winCondition - 1;
 
-
+        // Recursive cell crawler. Finds a win from an initial cell
         let crawlCells = function(row, column, color, direction, recurseCounter) {
-            // return {
-            //         win: false,
-            //         row: row,
-            //         column: column
-            //     };
             let currentColor = boardState[column][row];
+
+            // Immediately leave on empty cell. Necessary for first call
+            // Also sets speedup flags. Only ignores columns if moving horizontally.
             if (currentColor === 'E') {
                 if (direction.columnDelta === 1 && direction.rowDelta === 0)
                     ignoreColumn[column] = true;
@@ -173,6 +159,7 @@ class Conn4 extends React.Component {
                 };
             }
 
+            // Initial calls have no previous color; recurse
             if (!color) {
                 return crawlCells(row + direction.rowDelta, column + direction.columnDelta, currentColor, direction, recurseCounter - 1);
             }
@@ -199,6 +186,7 @@ class Conn4 extends React.Component {
             }
         };
 
+        // Walk cells from the bottom-left corner, moving right first, then up
         for(let currentRow=this.boardRows - 1; currentRow >= 0; currentRow--) {
 
             let nextHorizontal = 0;
