@@ -1,10 +1,16 @@
 import React from 'react';
 import './conn4_styles.css';
 
+
+function Piece(props) {
+    let className = props.className ? props.className : "piece";
+    return <div className={className} style={props.color} />;
+}
+
 function Cell(props) {
     return (
         <div className="cell">
-            <div className="piece" style={props.color} />
+            <Piece color={props.color}/>
         </div>
     );
 }
@@ -43,7 +49,7 @@ class Board extends React.Component {
             return <Column columnCells={column}
                            key={i}
                            columnIndex={i}
-                           disabledButton={this.props.nextCells[i] < 0}
+                           disabledButton={this.props.nextCells[i] < 0 || this.props.winningPlayer}
                            colors={this.props.colors}
                            buttonClick={() => this.props.buttonClick(i)}/>;
         });
@@ -215,13 +221,20 @@ class Conn4 extends React.Component {
 
 
     render() {
-        return (<div>
+        return (<div className="conn4">
             <Board boardState={this.state.boardState}
                       nextCells={this.state.nextCells}
                       colors={this.colors}
                       buttonClick={(col) => this.dropPiece(col)}
+                      winningPlayer={this.state.winningPlayer}
         />
-        {this.state.winningPlayer && <h1>{this.state.winningPlayer}</h1>}</div>)
+
+       {this.state.winningPlayer && <div className="winner-panel">
+            <h1>WINNER!</h1>
+            <Piece className="winner-piece" color={this.colors[this.state.winningPlayer]}/>
+        </div>
+       }
+        </div>)
     }
 }
 
